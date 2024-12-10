@@ -31,11 +31,40 @@ class ChequeIssuanceCrudController extends CrudController
         CRUD::setEntityNameStrings('cheque issuance', 'cheque issuances');
 
         $this->crud->setColumns([
-            'business_name',   // Name of the business
-            'bank',             // The name of the bank
-            'cheque_number',  // Last 4 digits of the cheque number
-            'remarks',         // Remarks
+            [
+                'name'  => 'business_name',
+                'label' => 'Business Name',   // Custom label for the 'business_name' column
+            ],
+            [
+                'name'  => 'bank',
+                'label' => 'Bank Name',       // Custom label for the 'bank' column
+            ],
+            [
+                'name'  => 'cheque_number',
+                'label' => 'Cheque No. (Last 4 Digits)',  // Custom label for the 'cheque_number' column
+            ],
+            [
+                'name'  => 'amount',
+                'label' => 'Cheque Amount',
+                'type'  => 'closure', // Use 'closure' to format the amount
+                'function' => function($entry) {
+                    return '₱' . number_format($entry->amount, 2, '.', ','); // Format amount as ₱10,000.00
+                }
+            ],
+            [
+                'name'  => 'status',
+                'label' => 'Cheque Status',   // Custom label for the 'status' column
+            ],
+            [
+                'name'  => 'remarks',
+                'label' => 'Remarks',         // Custom label for the 'remarks' column
+            ],
+            [
+                'name'  => 'created_at',
+                'label' => 'Date Created',    // Custom label for the 'created_at' column
+            ],
         ]);
+        
 
         $this->crud->addFields([
             [
@@ -63,6 +92,32 @@ class ChequeIssuanceCrudController extends CrudController
                     'maxlength' => 4
                 ]
             ],
+
+            [
+                'name'  => 'amount',
+                'label' => 'Amount',
+                'type'  => 'number',
+                'attributes' => [
+                    'step' => '0.01',
+                    'min' => '0',
+                ],
+                'prefix' => '₱',
+            ],
+
+            [
+                'name'  => 'status',
+                'label' => 'Status',
+                'type'  => 'select_from_array',
+                'options' => [
+                    'pending' => 'Pending',
+                    'processed' => 'Processed',
+                    'paid' => 'Paid',
+                    'failed' => 'Failed',
+                ],
+                'allows_null' => false,
+                'default' => 'pending',
+            ],
+
             [
                 'name'  => 'remarks',
                 'type'  => 'textarea',
@@ -71,6 +126,7 @@ class ChequeIssuanceCrudController extends CrudController
                     'placeholder' => 'Enter any remarks'
                 ]
             ],
+
         ]);
     }
 

@@ -14,6 +14,8 @@ class ChequeIssuance extends Model
         'business_name',
         'bank',
         'cheque_number',
+        'amount',
+        'status',
         'remarks',
     ];
 }
